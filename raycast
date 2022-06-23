@@ -1,0 +1,45 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using TMPro;
+
+public class usingRayCast : MonoBehaviour
+{
+    public TextMeshProUGUI usingRayCastText;
+    float xAxis,yAxis,zAxis;
+    int X,Y,Z;
+    public Camera mainCamera;
+    private RaycastHit hit;
+    private Vector3 worldMousePosition,lineDirection;
+    private Renderer ren;
+    void Start(){
+       ren = GetComponent<Renderer>();
+   }
+     
+    private void OnMouseEnter(){
+         
+            Debug.Log("Mouse Enter !");
+            worldMousePosition = mainCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 100f));
+            lineDirection = worldMousePosition - mainCamera.transform.position;
+            if(Physics.Raycast(mainCamera.transform.position, lineDirection,out hit, 100f)){
+                if(hit.collider.gameObject.tag == "rayCastTag"){
+                        ren.material.color = Color.blue;
+                        xAxis = hit.collider.gameObject.transform.position.x;
+                        yAxis = hit.collider.gameObject.transform.position.y;
+                        zAxis = hit.collider.gameObject.transform.position.z;
+                        X = (int)xAxis;
+                        Y = (int)yAxis;
+                        Z = (int)zAxis;
+                        usingRayCastText.text = "Using Raycast : "+X.ToString()+", "+Y.ToString()+", "+Z.ToString();
+                    
+                }
+                
+            }
+    }
+    private void OnMouseExit(){
+        ren.material.color = Color.white;
+        Debug.Log("Mouse Exit !");
+        usingRayCastText.text = "Using Raycast : "+"0"+", "+"0"+", "+"0";
+    }
+
+}
