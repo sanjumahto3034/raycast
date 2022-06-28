@@ -1,0 +1,45 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class keyboardInputToPlayer : MonoBehaviour
+{
+    private bool canHold = true;
+    public Transform holdingPostion;
+    public GameObject objects;
+    private Vector3 WorldMousePosition;
+    private Vector3 direction;
+    public Camera mainCamera;
+    private RaycastHit hit;
+  
+    void Update(){
+        if(canHold){
+            if(Input.GetKey(KeyCode.F)){
+                 WorldMousePosition = mainCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,Input.mousePosition.y,100f));
+                direction = WorldMousePosition - mainCamera.transform.position;
+                
+                if(Physics.Raycast(mainCamera.transform.position,direction,out hit,5f)){
+                     if(hit.collider.gameObject.tag == "obj"){
+                        hit.collider.gameObject.GetComponent<Rigidbody>().isKinematic = true;
+                        hit.collider.transform.eulerAngles = holdingPostion.transform.eulerAngles;
+                        hit.collider.gameObject.transform.position = holdingPostion.transform.position;
+                        hit.collider.gameObject.transform.parent = holdingPostion.transform;
+                        canHold = false; 
+                     }
+                }
+        
+            }
+        }
+          else{
+          if(Input.GetKey(KeyCode.Mouse0)){
+            Transform childToRemove = holdingPostion.transform.Find("object");
+            childToRemove.GetComponent<Rigidbody>().isKinematic = false;
+            childToRemove.parent = null;
+            canHold = true;
+            }
+          }
+        
+    }
+       
+}
+ 
